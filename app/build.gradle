@@ -1,0 +1,137 @@
+import com.boos.pokedex.buildSrc.Libs
+
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'dagger.hilt.android.plugin'
+    id 'kotlin-kapt'
+    id 'kotlin-parcelize'
+    id 'com.google.devtools.ksp' version '1.6.10-1.0.2'
+}
+
+//needed for KSP issue https://github.com/google/ksp/issues/37
+kotlin {
+    sourceSets {
+        debug {
+            kotlin.srcDir("build/generated/ksp/debug/kotlin")
+        }
+        release {
+            kotlin.srcDir("build/generated/ksp/release/kotlin")
+        }
+    }
+}
+
+android {
+    compileSdk Libs.compileSdkVersion
+
+    defaultConfig {
+        applicationId "com.boos.pokedex"
+        minSdk Libs.minSdkVersion
+        targetSdk Libs.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "com.boos.pokedex.HiltTestRunner"
+        vectorDrawables {
+            useSupportLibrary true
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion Libs.AndroidX.Compose.version
+    }
+    packagingOptions {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+    testOptions {
+        // Used for Unit testing Android dependent elements in /test folder
+        //unitTests.includeAndroidResources  = true
+        //unitTests.returnDefaultValues = true
+    }
+}
+
+dependencies {
+
+    implementation Libs.Kotlin.stdlib
+    implementation Libs.Coroutines.android
+
+    implementation Libs.AndroidX.coreKtx
+    implementation Libs.AndroidX.navigation
+    implementation Libs.AndroidX.Activity.activityCompose
+    implementation Libs.AndroidX.Compose.runtime
+    implementation Libs.AndroidX.Compose.foundation
+    implementation Libs.AndroidX.Compose.layout
+    implementation Libs.AndroidX.Compose.ui
+    implementation Libs.AndroidX.Compose.uiUtil
+    implementation Libs.AndroidX.Compose.material
+    implementation Libs.AndroidX.Compose.animation
+    implementation Libs.AndroidX.Compose.tooling
+    implementation Libs.AndroidX.Compose.iconsExtended
+    implementation Libs.AndroidX.ConstraintLayout.constraintLayoutCompose
+    implementation Libs.AndroidX.Room.runtime
+    kapt Libs.AndroidX.Room.annotationProcessor
+    implementation Libs.AndroidX.Room.ktx
+    implementation Libs.AndroidX.Hilt.android
+    implementation Libs.AndroidX.Hilt.compose
+    kapt Libs.AndroidX.Hilt.kaptCompiler
+
+    implementation Libs.Network.retrofit
+    implementation Libs.Network.openCsv
+    implementation Libs.Network.moshi
+    implementation Libs.Network.moshiKotlin
+    implementation Libs.Network.moshiAdapters
+    implementation Libs.Network.retrofitMoshiAdapter
+
+    implementation Libs.Accompanist.insets
+    implementation Libs.Accompanist.swipeRefresh
+    implementation Libs.Coil.coilCompose
+    implementation Libs.Coil.coil
+    implementation Libs.ComposeDestinations.core
+    ksp Libs.ComposeDestinations.ksp
+
+
+    testImplementation Libs.Test.junit
+    testImplementation Libs.Test.mockK
+    testImplementation Libs.Coroutines.test
+    testImplementation Libs.Test.mockWebServer
+    testImplementation Libs.Test.truth
+    testImplementation Libs.AndroidTest.testRunner
+    testImplementation Libs.AndroidTest.junit
+    testImplementation Libs.AndroidTest.core
+    testImplementation Libs.AndroidTest.androidXArchCore
+    //for robolectric support if needed
+    testImplementation Libs.AndroidTest.hilt
+    kaptTest Libs.AndroidTest.hiltKapt
+
+    androidTestImplementation Libs.Test.junit
+    androidTestImplementation Libs.AndroidTest.mockKAndroid
+    androidTestImplementation Libs.Coroutines.test
+    androidTestImplementation Libs.Test.mockWebServer
+    androidTestImplementation Libs.Test.truth
+    androidTestImplementation Libs.AndroidTest.core
+    androidTestImplementation Libs.AndroidTest.rules
+    androidTestImplementation Libs.AndroidTest.testRunner
+    androidTestImplementation Libs.AndroidTest.junitKtx
+    androidTestImplementation Libs.AndroidTest.hilt
+    kaptAndroidTest Libs.AndroidTest.hiltKapt
+    androidTestImplementation Libs.AndroidX.Compose.uiTest
+    debugImplementation Libs.AndroidX.Compose.uiTestManifest
+}
